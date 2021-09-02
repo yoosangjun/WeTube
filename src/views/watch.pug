@@ -1,0 +1,9 @@
+extends base.pug
+
+block content 
+    div
+        p=video.description
+        small=video.createdAt
+    a(href=`${video.id}/edit`) Edit video &rarr; 
+    //-   앞에다 / 넣을경우엔 새로운 초기화된 url로 이동 absolute url  
+    //- / 없을경우 현재있는 위치에서 이동 relative url

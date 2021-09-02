@@ -1,37 +1,20 @@
 import express from "express";
-
-const PORT = 4000;
+import morgan from "morgan";
+import globalRouter from "./routers/globalRouter";
+import userRouter from "./routers/userRouter";
+import videoRouter from "./routers/videoRouter";
 
 const app = express();
 
-const handleHome = (req, res) => {
-  return res.send("my home");
-};
+const logger = morgan("dev");
 
-const logger = (req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-};
-
-const privateMiddleware = (req, res, next) => {
-  const url = req.url;
-  if (url === "/protected") {
-    return res.send("<h1> Not Allowed</h1>");
-  }
-  console.log("Allowed, you may continue.");
-  next();
-};
-
-const handleProtected = (req, res) => {
-  return res.send("Welcome to the private lounge");
-};
-
+// express에게 주는 정보
+app.set("view engine", "pug"); // 뷰 엔진 설정 선언
+app.set("views", process.cwd() + "/src/views"); // 뷰파일들이 있는 폴더 설정
 app.use(logger);
-app.use(privateMiddleware);
-app.get("/", handleHome);
-app.get("/protected", handleProtected);
+app.use(express.urlencoded({ extended: true }));
+app.use("/", globalRouter);
+app.use("/videos", videoRouter);
+app.use("/users", userRouter);
 
-const handleListening = () =>
-  console.log(`Server listening on port http://localhost:${PORT}`);
-
-app.listen(PORT, handleListening);
+export default app;
